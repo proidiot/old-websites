@@ -1,5 +1,6 @@
 # Automake specific
 Makefile.in
+Makefile
 
 # Autoconf specific
 /autom4te.cache
@@ -9,6 +10,12 @@ Makefile.in
 /depcomp
 /install-sh
 /missing
+/config.h.in
+/config.h
+/config.status
+/stamp-h1
+/configure.scan
+/autoscan.log
 
 # C specific
 *.o
@@ -17,6 +24,7 @@ Makefile.in
 *.so
 *.so.*
 *.out
+.deps
 
 # Vi specific
 *~

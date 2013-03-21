@@ -14,8 +14,11 @@ AC_PROG_MAKE_SET
 
 # Checks for libraries.
 PKG_CHECK_MODULES([DEPS], [libmicrohttpd >= 0.9])
+#AC_SUBST([DEPS_CFLAGS])
+#AC_SUBST([DEPS_LIBS])
 
 # Checks for header files.
+AC_CHECK_HEADERS([string.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
@@ -25,6 +28,10 @@ AC_TYPE_SIZE_T
 # Output time!
 AC_CONFIG_FILES([Makefile
                  doc/Makefile
+		 doc/tutorial-ch2/Makefile
+		 doc/tutorial-ch2-pedantic/Makefile
+		 doc/tutorial-ch2-argv/Makefile
+		 doc/tutorial-ch2-time/Makefile
                  src/Makefile
                  test/Makefile])
 AC_OUTPUT
