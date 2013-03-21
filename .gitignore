@@ -36,3 +36,12 @@ Makefile
 *.gcda
 *.gcov
 
+# ctags specific
+tags
+TAGS
+TAGS.include
+
+# DejaGnu specific
+site.exp
+*.sum
+
