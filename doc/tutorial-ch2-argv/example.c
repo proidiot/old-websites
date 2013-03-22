@@ -13,7 +13,7 @@ int answer_to_connection(
 		size_t* upload_data_size,
 		void** con_cls)
 {
-	char* page[BUFSIZ];
+	char page[BUFSIZ];
 	sprintf(page, "<html><body>%s</body></html>", (char*)cls);
 	struct MHD_Response* response;
 	int ret;

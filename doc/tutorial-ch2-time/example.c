@@ -14,10 +14,11 @@ int answer_to_connection(
 		size_t* upload_data_size,
 		void** con_cls)
 {
-	char* page[BUFSIZ];
+	char page[BUFSIZ];
 	char* (*fp)(const time_t*) = NULL;
 	fp = cls;
-	sprintf(page, "<html><body>%s</body></html>", fp(time(NULL)));
+	time_t now = time(NULL);
+	sprintf(page, "<html><body>%s</body></html>", fp(&now));
 	struct MHD_Response* response;
 	int ret;
 
