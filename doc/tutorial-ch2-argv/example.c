@@ -13,7 +13,7 @@ int answer_to_connection(
 		size_t* upload_data_size,
 		void** con_cls)
 {
-	char page[BUFSIZ];
+	char* page = (char*)malloc(BUFSIZ);
 	sprintf(page, "<html><body>%s</body></html>", (char*)cls);
 	struct MHD_Response* response;
 	int ret;
@@ -21,7 +21,7 @@ int answer_to_connection(
 	response = MHD_create_response_from_buffer(
 			strlen(page),
 			(void*)page,
-			MHD_RESPMEM_PERSISTENT);
+			MHD_RESPMEM_MUST_FREE);
 
 	ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
 	MHD_destroy_response(response);

@@ -14,7 +14,7 @@ int answer_to_connection(
 		size_t* upload_data_size,
 		void** con_cls)
 {
-	char page[BUFSIZ];
+	char* page = (char*)malloc(BUFSIZ);
 	char* (*fp)(const time_t*) = NULL;
 	fp = cls;
 	time_t now = time(NULL);
@@ -25,7 +25,7 @@ int answer_to_connection(
 	response = MHD_create_response_from_buffer(
 			strlen(page),
 			(void*)page,
-			MHD_RESPMEM_PERSISTENT);
+			MHD_RESPMEM_MUST_FREE);
 
 	ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
 	MHD_destroy_response(response);

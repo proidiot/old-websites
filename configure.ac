@@ -25,6 +25,18 @@ AC_TYPE_SIZE_T
 
 # Checks for library functions.
 
+AC_ARG_ENABLE(debug,
+AS_HELP_STRING([--enable-debug],
+               [enable debugging, default: no]),
+[case "${enableval}" in
+             yes) debug=true ;;
+             no)  debug=false ;;
+             *)   AC_MSG_ERROR([bad value ${enableval} for --enable-debug]) ;;
+esac],
+[debug=false])
+
+AM_CONDITIONAL(DEBUG, test x"$debug" = x"true")
+
 # Output time!
 AC_CONFIG_FILES([Makefile
                  doc/Makefile
@@ -32,6 +44,9 @@ AC_CONFIG_FILES([Makefile
 		 doc/tutorial-ch2-pedantic/Makefile
 		 doc/tutorial-ch2-argv/Makefile
 		 doc/tutorial-ch2-time/Makefile
+		 doc/tutorial-ch3/Makefile
+		 doc/tutorial-ch3-pages/Makefile
+		 doc/tutorial-ch3-ipaddr/Makefile
                  src/Makefile
                  test/Makefile])
 AC_OUTPUT
