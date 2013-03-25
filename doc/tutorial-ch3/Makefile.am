@@ -1,8 +1,9 @@
 
+LIBS = $(DEPS_LIBS)
+
 if TUTORIAL
 
 AM_CFLAGS = $(DEPS_CFLAGS)
-LIBS = $(DEPS_LIBS)
 
 noinst_PROGRAMS = mhd-example
 
