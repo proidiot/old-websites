@@ -34,8 +34,18 @@ AS_HELP_STRING([--enable-debug],
              *)   AC_MSG_ERROR([bad value ${enableval} for --enable-debug]) ;;
 esac],
 [debug=false])
-
 AM_CONDITIONAL(DEBUG, test x"$debug" = x"true")
+
+AC_ARG_ENABLE(tutorial,
+AS_HELP_STRING([--enable-tutorial],
+               [enable tutorial examples, default: no]),
+[case "${enableval}" in
+             yes) debug=true ;;
+             no)  debug=false ;;
+             *)   AC_MSG_ERROR([bad value ${enableval} for --enable-tutorial]) ;;
+esac],
+[tutorial=false])
+AM_CONDITIONAL(TUTORIAL, test x"$tutorial" = x"true")
 
 # Output time!
 AC_CONFIG_FILES([Makefile
