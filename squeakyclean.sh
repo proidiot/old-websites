@@ -13,16 +13,21 @@ PO_WHITELIST="*.po"
 
 if [ -f Makefile ]
 then
+	echo "Running make maintainer-clean" >&2
 	make maintainer-clean
+else
+	echo "No Makefile, skipping maintainer-clean" >&2
 fi
 
 for i in $EXTRA_TOP_FILES
 do
 	if [ -d $i ]
 	then
+		echo "Removing $i and its contents (if any)" >&2
 		rm -r $i
 	elif [ -f $i ]
 	then
+		echo "Removing $i" >&2
 		rm $i
 	fi
 done
@@ -51,8 +56,10 @@ then
 	do
 		if [ -d m4/$i ]
 		then
+			echo "Removing m4/$i and its contents (if any)" >&2
 			rm -r m4/$i
 		else
+			echo "Removing m4/$i" >&2
 			rm m4/$i
 		fi
 	done
@@ -82,8 +89,10 @@ then
 	do
 		if [ -d po/$i ]
 		then
+			echo "Removing po/$i and its contents (if any)" >&2
 			rm -r po/$i
 		else
+			echo "Removing po/$i" >&2
 			rm po/$i
 		fi
 	done
@@ -95,9 +104,11 @@ recursive_delete()
 	do
 		if [ -d $1/$i ]
 		then
+			echo "Removing $1/$i and its contents (if any)" >&2
 			rm -r $1/$i
 		elif [ -f $1/$i ]
 		then
+			echo "Removing $1/$i" >&2
 			rm $1/$i
 		fi
 	done
