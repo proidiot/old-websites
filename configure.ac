@@ -64,6 +64,7 @@ AC_CONFIG_FILES([Makefile
 		 doc/tutorial-ch4/Makefile
 		 doc/tutorial-ch4-sleep/Makefile
 		 doc/tutorial-ch4-timer/Makefile
+		 doc/tutorial-ch5/Makefile
                  src/Makefile
                  test/Makefile])
 AC_OUTPUT

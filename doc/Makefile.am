@@ -10,7 +10,8 @@ SUBDIRS = tutorial-ch2 \
 	  tutorial-ch3-ipaddr \
 	  tutorial-ch4 \
 	  tutorial-ch4-sleep \
-	  tutorial-ch4-timer 
+	  tutorial-ch4-timer \
+	  tutorial-ch5
 
 else
 
