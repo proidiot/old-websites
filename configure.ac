@@ -32,7 +32,8 @@ AC_ARG_ENABLE(debug,
 AS_HELP_STRING([--enable-debug],
                [enable debugging, default: no]),
 [case "${enableval}" in
-             yes) debug=true ;;
+             yes) AC_DEFINE([DEBUG], [1], [Enable debug mode])
+	     	  debug=true ;;
              no)  debug=false ;;
              *)   AC_MSG_ERROR([bad value ${enableval} for --enable-debug]) ;;
 esac],
@@ -62,6 +63,7 @@ AC_CONFIG_FILES([Makefile
 		 doc/tutorial-ch3-ipaddr/Makefile
 		 doc/tutorial-ch4/Makefile
 		 doc/tutorial-ch4-sleep/Makefile
+		 doc/tutorial-ch4-timer/Makefile
                  src/Makefile
                  test/Makefile])
 AC_OUTPUT
