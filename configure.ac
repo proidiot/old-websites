@@ -14,6 +14,7 @@ AC_PROG_MAKE_SET
 
 # Checks for libraries.
 AC_CHECK_LIB([m], [ceil])
+AC_CHECK_LIB([Judy], [JudySLGet])
 PKG_CHECK_MODULES([DEPS], [libmicrohttpd >= 0.9])
 #AC_SUBST([DEPS_CFLAGS])
 #AC_SUBST([DEPS_LIBS])
@@ -65,6 +66,7 @@ AC_CONFIG_FILES([Makefile
 		 doc/tutorial-ch4-sleep/Makefile
 		 doc/tutorial-ch4-timer/Makefile
 		 doc/tutorial-ch5/Makefile
+		 doc/tutorial-ch5-ipblock/Makefile
                  src/Makefile
                  test/Makefile])
 AC_OUTPUT
