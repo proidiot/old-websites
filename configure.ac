@@ -24,9 +24,11 @@ AC_CHECK_HEADERS([arpa/inet.h fcntl.h netinet/in.h stdlib.h string.h sys/socket.
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
+AC_TYPE_UINT64_T
 
 # Checks for library functions.
 AC_FUNC_MALLOC
+AC_FUNC_REALLOC
 AC_CHECK_FUNCS([inet_ntoa stpcpy strnlen])
 
 AC_ARG_ENABLE(debug,
@@ -67,6 +69,7 @@ AC_CONFIG_FILES([Makefile
 		 doc/tutorial-ch4-timer/Makefile
 		 doc/tutorial-ch5/Makefile
 		 doc/tutorial-ch5-ipblock/Makefile
+		 doc/tutorial-ch6/Makefile
                  src/Makefile
                  test/Makefile])
 AC_OUTPUT
