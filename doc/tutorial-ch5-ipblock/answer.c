@@ -1,6 +1,7 @@
 #include "answer.h"
 
 #include "badlist.h"
+#include "debug.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,10 +49,12 @@ int answer_to_connection(
 	int ret;
 
 	if (strncmp(method, "GET", 4) != 0) {
+		debug("non-GET received");
 		return MHD_NO;
 	}
 
 	if (*con_cls == NULL) {
+		debug("first pass of answer_to_call, skipping");
 		*con_cls = connection;
 		return MHD_YES;
 	}
@@ -69,6 +72,7 @@ int answer_to_connection(
 	}
 
 	if (authorized) {
+		debug("authorized user: %s", USER);
 		const char* page = "<html><body>Authorized!</body></html>";
 		response = MHD_create_response_from_buffer(
 				strlen(page),
@@ -79,6 +83,7 @@ int answer_to_connection(
 		}
 		ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
 	} else {
+		debug("unauthorized attempt");
 		const char* page = "<html><body>Unauthorized!</body></html>";
 		int bad_count;
 
@@ -88,7 +93,7 @@ int answer_to_connection(
 		if (info == NULL) {
 			return internal_server_error(connection);
 		}
-		bad_add((BADLIST)cls, info->client_addr);
+		bad_count = bad_add((BADLIST)cls, info->client_addr);
 
 		response = MHD_create_response_from_buffer(
 				strlen(page),
@@ -101,6 +106,13 @@ int answer_to_connection(
 				connection,
 				"Tutorial Example 5 Realm",
 				response);
+
+		if (bad_count > 1) {
+			ret = MHD_add_response_footer(
+					response,
+					MHD_HTTP_HEADER_CONNECTION,
+					"close");
+		}
 	}
 
 	MHD_destroy_response(response);

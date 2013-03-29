@@ -1,5 +1,6 @@
 #include "badlist.h"
 
+#include "debug.h"
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
@@ -17,7 +18,9 @@ typedef struct BADITEMSTRUCT {
 
 BADLIST new_BADLIST()
 {
-	return (BADLIST)NULL;
+	BADLIST list = (BADLIST)malloc(sizeof(Pvoid_t));
+	*list = NULL;
+	return list;
 }
 
 int bad_add(BADLIST list, const struct sockaddr* addr)
@@ -27,11 +30,11 @@ int bad_add(BADLIST list, const struct sockaddr* addr)
 	Word_t* pval;
 	BADITEM item;
 
-	JSLG(pval, list, addr_s);
+	JSLG(pval, *list, addr_s);
 
 	if (pval == NULL) {
 		item = (BADITEM)malloc(sizeof(struct BADITEMSTRUCT));
-		JSLI(pval, list, addr_s);
+		JSLI(pval, *list, addr_s);
 		*pval = (Word_t)item;
 
 		item->count = 1;
@@ -45,6 +48,7 @@ int bad_add(BADLIST list, const struct sockaddr* addr)
 	}
 	item->last = time(NULL);
 
+	debug("address: %s consecutive bad attempts: %d", addr_s, item->count);
 	return item->count;
 }
 
@@ -54,7 +58,7 @@ int is_blacklisted(BADLIST list, const struct sockaddr* addr)
 			((const struct sockaddr_in*)addr)->sin_addr);
 	Word_t* pval;
 
-	JSLG(pval, list, addr_s);
+	JSLG(pval, *list, addr_s);
 
 	if (pval == NULL) {
 		return FALSE;
@@ -63,11 +67,16 @@ int is_blacklisted(BADLIST list, const struct sockaddr* addr)
 		if (item->count < BLACKLIST_THRESHOLD) {
 			return FALSE;
 		} else if (item->last + BLACKLIST_DURATION >= time(NULL)) {
+			debug(
+					"connection attempt from blacklisted "
+					"address: %s",
+					addr_s);
 			return TRUE;
 		} else {
+			debug("blacklisting expired from address: %s", addr_s);
 			int res;
 			free(item);
-			JSLD(res, list, addr_s);
+			JSLD(res, *list, addr_s);
 			return FALSE;
 		}
 	}

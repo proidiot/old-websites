@@ -8,7 +8,7 @@
 #define BLACKLIST_WINDOW 30
 #define BLACKLIST_DURATION 300
 
-typedef Pvoid_t BADLIST;
+typedef Pvoid_t* BADLIST;
 
 BADLIST new_BADLIST();
 

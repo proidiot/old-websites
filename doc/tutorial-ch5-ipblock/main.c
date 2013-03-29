@@ -2,6 +2,7 @@
 #include "answer.h"
 #include "connect.h"
 #include "badlist.h"
+#include "debug.h"
 
 int main()
 {
@@ -21,6 +22,7 @@ int main()
 
 	getchar();
 
+	free(list);
 	MHD_stop_daemon(daemon);
 	return 0;
 }
