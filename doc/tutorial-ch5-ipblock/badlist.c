@@ -52,6 +52,18 @@ int bad_add(BADLIST list, const struct sockaddr* addr)
 	return item->count;
 }
 
+void bad_rem(BADLIST list, const struct sockaddr* addr)
+{
+	char* addr_s = inet_ntoa(
+			((const struct sockaddr_in*)addr)->sin_addr);
+	int res = 0;
+
+	JSLD(res, *list, addr_s);
+	if (res != 0) {
+		debug("address removed from bad list: %s", addr_s);
+	}
+}
+
 int is_blacklisted(BADLIST list, const struct sockaddr* addr)
 {
 	char* addr_s = inet_ntoa(
@@ -74,7 +86,7 @@ int is_blacklisted(BADLIST list, const struct sockaddr* addr)
 			return TRUE;
 		} else {
 			debug("blacklisting expired from address: %s", addr_s);
-			int res;
+			int res = 0;
 			free(item);
 			JSLD(res, *list, addr_s);
 			return FALSE;

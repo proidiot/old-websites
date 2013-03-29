@@ -14,6 +14,8 @@ BADLIST new_BADLIST();
 
 int bad_add(BADLIST list, const struct sockaddr* addr);
 
+void bad_rem(BADLIST list, const struct sockaddr* addr);
+
 int is_blacklisted(BADLIST list, const struct sockaddr* addr);
 
 #endif

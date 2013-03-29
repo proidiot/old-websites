@@ -73,6 +73,15 @@ int answer_to_connection(
 
 	if (authorized) {
 		debug("authorized user: %s", USER);
+
+		const union MHD_ConnectionInfo* info = MHD_get_connection_info(
+				connection,
+				MHD_CONNECTION_INFO_CLIENT_ADDRESS);
+		if (info == NULL) {
+			return internal_server_error(connection);
+		}
+		bad_rem((BADLIST)cls, info->client_addr);
+
 		const char* page = "<html><body>Authorized!</body></html>";
 		response = MHD_create_response_from_buffer(
 				strlen(page),
