@@ -56,7 +56,7 @@ int form_data_iterator(
 				state->formdatalen = 0;
 				return MHD_NO;
 			}
-			strncpy(state->formdata, data + offset, len);
+			strncpy(state->formdata, data, len);
 			state->formdatalen = strnlen(state->formdata, len);
 			state->formdata = realloc(
 					state->formdata,
