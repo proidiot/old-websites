@@ -3,8 +3,10 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #define POST_BUFFER_SIZE 512
+#define FILE_SAVE_FOLDER "/tmp"
 
 REQUEST_STATE new_REQUEST_STATE(
 		struct MHD_Connection* connection,
@@ -67,13 +69,18 @@ BOOL open_request_file(REQUEST_STATE rstate, const char* filename)
 		rstate->was_filename_issue = TRUE;
 		return FALSE;
 	}
-	FILE* tfd = fopen(filename, "rb");
+
+	char* fullfilename = NEWSTRING;
+	snprintf(fullfilename, BUFSIZ, FILE_SAVE_FOLDER "/%s", filename);
+	SHRINKSTR(fullfilename);
+
+	FILE* tfd = fopen(fullfilename, "rb");
 	if (tfd != NULL) {
 		fclose(tfd);
 		rstate->was_filename_issue = TRUE;
 		return FALSE;
 	} else {
-		rstate->fd = fopen(filename, "ab");
+		rstate->fd = fopen(fullfilename, "ab");
 		if (rstate->fd == NULL) {
 			rstate->was_error = TRUE;
 			return FALSE;

@@ -2,6 +2,7 @@
 
 #include "server_error.h"
 #include "common_macros.h"
+#include "debug.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -61,7 +62,6 @@ int form_data_iterator(
 	if (!SMATCH(key, "file")) {
 		return MHD_YES;
 	} else {
-		debug("Getting file: %s", filename);
 		REQUEST_STATE rstate = cls;
 
 		if (!request_file_opened(rstate)) {
@@ -70,13 +70,14 @@ int form_data_iterator(
 				debug("Unable to open file.");
 				return MHD_NO;
 			}
-			debug("Able to open file.");
+			debug("Opened the file: %s", filename);
 		}
 		if (len > 0) {
 			if (fwrite(data, len, sizeof(char), rstate->fd)==0) {
 				debug("Unable to write.");
 				return MHD_NO;
 			} else {
+				debug("Wrote %d bytes.", len);
 				return MHD_YES;
 			}
 		} else {
