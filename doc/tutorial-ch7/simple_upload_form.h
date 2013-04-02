@@ -10,7 +10,7 @@
 #define gen_form(c,u,ds) _debug_int_ret(__FILE__,__LINE__,_gen_form((c),u,(ds)),"gen_form")
 #define gen_result(c) _debug_int_ret(__FILE__,__LINE__,_gen_result((c)),"gen_result")
 #else
-#define gen_form(c,u) _gen_form((c),u)
+#define gen_form(c,u,ds) _gen_form((c),u,(ds))
 #define gen_result(c) _gen_result((c))
 #endif
 
