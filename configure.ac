@@ -20,7 +20,7 @@ PKG_CHECK_MODULES([DEPS], [libmicrohttpd >= 0.9])
 #AC_SUBST([DEPS_LIBS])
 
 # Checks for header files.
-AC_CHECK_HEADERS([arpa/inet.h fcntl.h netinet/in.h stdlib.h string.h sys/socket.h unistd.h])
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h netinet/in.h stddef.h stdlib.h string.h sys/socket.h unistd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
@@ -29,7 +29,7 @@ AC_TYPE_UINT64_T
 # Checks for library functions.
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
-AC_CHECK_FUNCS([inet_ntoa stpcpy strnlen])
+AC_CHECK_FUNCS([inet_ntoa stpcpy strchr strnlen])
 
 AC_ARG_ENABLE(debug,
 AS_HELP_STRING([--enable-debug],
@@ -70,6 +70,7 @@ AC_CONFIG_FILES([Makefile
 		 doc/tutorial-ch5/Makefile
 		 doc/tutorial-ch5-ipblock/Makefile
 		 doc/tutorial-ch6/Makefile
+		 doc/tutorial-ch7/Makefile
                  src/Makefile
                  test/Makefile])
 AC_OUTPUT
