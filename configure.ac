@@ -71,6 +71,7 @@ AC_CONFIG_FILES([Makefile
 		 doc/tutorial-ch5-ipblock/Makefile
 		 doc/tutorial-ch6/Makefile
 		 doc/tutorial-ch7/Makefile
+		 doc/tutorial-ch8/Makefile
                  src/Makefile
                  test/Makefile])
 AC_OUTPUT
