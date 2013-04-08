@@ -7,11 +7,12 @@
 #include <stdio.h>
 #include <string.h>
 
-int _gen_front(struct MHD_Connection* connection, SESSION session)
+int _gen_front(struct MHD_Connection* connection, REQUEST_STATE rstate)
 {
-	if (session == NULL) {
+	if (rstate == NULL || rstate->session == NULL) {
 		return server_error(connection);
 	}
+	SESSION session = rstate->session;
 
 	const char* top = "<html><body><h1>Session-Based Form Example</h1>"
 		"This form uses a session cookie to keep track of your "
@@ -22,9 +23,9 @@ int _gen_front(struct MHD_Connection* connection, SESSION session)
 	const char* welcome = "<br />Welcome back, %s!";
 	const char* form_start = "<br /><form action=\"";
 	const char* form_middle = "\" method=\"POST\" "
-		"anctype=\"multipart/form-data\"><fieldset><legend>Multi-Page "
+		"enctype=\"multipart/form-data\"><fieldset><legend>Multi-Page "
 		"Form</legend><input type=\"submit\" value=\"";
-	const char* form_end = "\" /><fieldset></form></body></html>";
+	const char* form_end = "\" /></fieldset></form></body></html>";
 	const char* begin = "Begin &gt;";
 	const char* continue_val = "Continue &gt;";
 	const char* modify = "Modify &gt;";
@@ -133,10 +134,13 @@ int _gen_front(struct MHD_Connection* connection, SESSION session)
 			MHD_RESPMEM_MUST_FREE);
 
 	if (response != NULL) {
-		int ret = MHD_queue_response(
-				connection,
-				MHD_HTTP_OK,
-				response);
+		int ret = send_cookie(rstate, response);
+		if (ret != MHD_NO) {
+			ret = MHD_queue_response(
+					connection,
+					MHD_HTTP_OK,
+					response);
+		}
 		MHD_destroy_response(response);
 		return ret;
 	} else {
@@ -145,22 +149,23 @@ int _gen_front(struct MHD_Connection* connection, SESSION session)
 	}
 }
 
-int _gen_name_form(struct MHD_Connection* connection, SESSION session)
+int _gen_name_form(struct MHD_Connection* connection, REQUEST_STATE rstate)
 {
-	if (session == NULL) {
+	if (rstate == NULL || rstate->session == NULL) {
 		return server_error(connection);
 	}
+	SESSION session = rstate->session;
 
 	const char* top = "<html><body><h1>Session-Based Form Example</h1>"
 		"This form uses a session cookie to keep track of your "
 		"progress.";
 	const char* form_start = "<br /><form action=\"";
 	const char* form_middle = "\" method=\"POST\" "
-		"anctype=\"multipart/form-data\"><fieldset><legend>Multi-Page "
+		"enctype=\"multipart/form-data\"><fieldset><legend>Multi-Page "
 		"Form</legend>Please enter your name:<br /><input "
 		"type=\"text\" name=\"name\" value=\"";
 	const char* form_submit = "\" /><br /><input type=\"submit\" value=\"";
-	const char* form_end = "\" /><fieldset></form></body></html>";
+	const char* form_end = "\" /></fieldset></form></body></html>";
 	const char* next = "Next &gt;";
 	const char* finish = "Finish";
 	const char* url;
@@ -213,10 +218,13 @@ int _gen_name_form(struct MHD_Connection* connection, SESSION session)
 			MHD_RESPMEM_MUST_FREE);
 
 	if (response != NULL) {
-		int ret = MHD_queue_response(
-				connection,
-				MHD_HTTP_OK,
-				response);
+		int ret = send_cookie(rstate, response);
+		if (ret != MHD_NO) {
+			ret = MHD_queue_response(
+					connection,
+					MHD_HTTP_OK,
+					response);
+		}
 		MHD_destroy_response(response);
 		return ret;
 	} else {
@@ -225,22 +233,23 @@ int _gen_name_form(struct MHD_Connection* connection, SESSION session)
 	}
 }
 
-int _gen_job_form(struct MHD_Connection* connection, SESSION session)
+int _gen_job_form(struct MHD_Connection* connection, REQUEST_STATE rstate)
 {
-	if (session == NULL) {
+	if (rstate == NULL || rstate->session == NULL) {
 		return server_error(connection);
 	}
+	SESSION session = rstate->session;
 
 	const char* top = "<html><body><h1>Session-Based Form Example</h1>"
 		"This form uses a session cookie to keep track of your "
 		"progress.";
 	const char* form_start = "<br /><form action=\"";
 	const char* form_middle = "\" method=\"POST\" "
-		"anctype=\"multipart/form-data\"><fieldset><legend>Multi-Page "
+		"enctype=\"multipart/form-data\"><fieldset><legend>Multi-Page "
 		"Form</legend>Please enter your job:<br /><input "
 		"type=\"text\" name=\"job\" value=\"";
 	const char* form_submit = "\" /><br /><input type=\"submit\" value=\"";
-	const char* form_end = "\" /><fieldset></form></body></html>";
+	const char* form_end = "\" /></fieldset></form></body></html>";
 	const char* next = "Next &gt;";
 	const char* finish = "Finish";
 	const char* url;
@@ -249,7 +258,8 @@ int _gen_job_form(struct MHD_Connection* connection, SESSION session)
 
 	if (session->job_set) {
 		old_job = session->job;
-		submit_val = next;
+	} else {
+		old_job = "";
 	}
 	if (!session->name_set) {
 		url = NAME_FORM_URL;
@@ -291,10 +301,13 @@ int _gen_job_form(struct MHD_Connection* connection, SESSION session)
 			MHD_RESPMEM_MUST_FREE);
 
 	if (response != NULL) {
-		int ret = MHD_queue_response(
-				connection,
-				MHD_HTTP_OK,
-				response);
+		int ret = send_cookie(rstate, response);
+		if (ret != MHD_NO) {
+			ret = MHD_queue_response(
+					connection,
+					MHD_HTTP_OK,
+					response);
+		}
 		MHD_destroy_response(response);
 		return ret;
 	} else {
@@ -303,19 +316,20 @@ int _gen_job_form(struct MHD_Connection* connection, SESSION session)
 	}
 }
 
-int _gen_result(struct MHD_Connection* connection, SESSION session)
+int _gen_result(struct MHD_Connection* connection, REQUEST_STATE rstate)
 {
-	if (session == NULL) {
+	if (rstate == NULL || rstate->session == NULL) {
 		return server_error(connection);
-	} else if (!(session->name_set && session->job_set)) {
-		return _gen_front(connection, session);
+	} else if (!(rstate->session->name_set && rstate->session->job_set)) {
+		return _gen_front(connection, rstate);
 	}
+	SESSION session = rstate->session;
 
 	const char* fpage = "<html><body><h1>Session-Based Form Example</h1>"
 		"This form uses a session cookie to keep track of your "
 		"progress.<br />You have completed the form!<br />The "
-		"information we have retrieved is:<ul><li>Your name is:%s"
-		"</li><li>Your job is:%s</li></ul><br />You can return to the "
+		"information we have retrieved is:<ul><li>Your name is: %s"
+		"</li><li>Your job is: %s</li></ul><br />You can return to the "
 		"<a href=\"%s\">home page</a> if you like.</body></html>";
 
 	size_t len = strlen(fpage) - 6 + 1
@@ -342,10 +356,13 @@ int _gen_result(struct MHD_Connection* connection, SESSION session)
 			MHD_RESPMEM_MUST_FREE);
 
 	if (response != NULL) {
-		int ret = MHD_queue_response(
-				connection,
-				MHD_HTTP_OK,
-				response);
+		int ret = send_cookie(rstate, response);
+		if (ret != MHD_NO) {
+			ret = MHD_queue_response(
+					connection,
+					MHD_HTTP_OK,
+					response);
+		}
 		MHD_destroy_response(response);
 		return ret;
 	} else {

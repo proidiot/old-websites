@@ -10,6 +10,7 @@
 #include "daemon_state.h"
 #include "common_macros.h"
 #include "forbidden.h"
+#include "debug.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -68,6 +69,7 @@ int answer_to_connection(
 					method, 
 					&form_data_iterator);
 			if (rstate == NULL) {
+				debug("Unable to create new REQUEST_STATE");
 				return MHD_NO;
 			}
 
@@ -84,7 +86,7 @@ int answer_to_connection(
 		} else if (rstate->was_error) {
 			return server_error(connection);
 		} else {
-			return gen_front(connection, rstate->session);
+			return gen_front(connection, rstate);
 		}
 	} else if (SMATCH(url, NAME_FORM_URL)) {
 		if (SMATCH(method, MHD_HTTP_METHOD_OPTIONS)) {
@@ -121,6 +123,7 @@ int answer_to_connection(
 					method, 
 					&form_data_iterator);
 			if (rstate == NULL) {
+				debug("Unable to create new REQUEST_STATE");
 				return MHD_NO;
 			}
 
@@ -137,7 +140,7 @@ int answer_to_connection(
 		} else if (rstate->was_error) {
 			return server_error(connection);
 		} else {
-			return gen_name_form(connection, rstate->session);
+			return gen_name_form(connection, rstate);
 		}
 	} else if (SMATCH(url, JOB_FORM_URL)) {
 		if (SMATCH(method, MHD_HTTP_METHOD_OPTIONS)) {
@@ -174,6 +177,7 @@ int answer_to_connection(
 					method, 
 					&form_data_iterator);
 			if (rstate == NULL) {
+				debug("Unable to create new REQUEST_STATE");
 				return MHD_NO;
 			}
 
@@ -190,7 +194,7 @@ int answer_to_connection(
 		} else if (rstate->was_error) {
 			return server_error(connection);
 		} else {
-			return gen_job_form(connection, rstate->session);
+			return gen_job_form(connection, rstate);
 		}
 	} else if (SMATCH(url, FORM_RESULT_URL)) {
 		if (SMATCH(method, MHD_HTTP_METHOD_OPTIONS)) {
@@ -227,6 +231,7 @@ int answer_to_connection(
 					method, 
 					&form_data_iterator);
 			if (rstate == NULL) {
+				debug("Unable to create new REQUEST_STATE");
 				return MHD_NO;
 			}
 
@@ -243,7 +248,7 @@ int answer_to_connection(
 		} else if (rstate->was_error) {
 			return server_error(connection);
 		} else {
-			return gen_result(connection, rstate->session);
+			return gen_result(connection, rstate);
 		}
 	} else if (SMATCH(method, MHD_HTTP_METHOD_OPTIONS)
 			&& SMATCH(url, "*")) {

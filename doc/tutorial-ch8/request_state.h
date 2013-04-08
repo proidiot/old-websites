@@ -8,6 +8,8 @@
 #include "daemon_state.h"
 #include <stdio.h>
 
+#define COOKIE_NAME "SESSION"
+
 typedef struct REQUEST_STATE_STRUCT {
 	char method[25];
 	struct MHD_PostProcessor* processor;
@@ -35,5 +37,7 @@ BOOL append_encoded_job(
 		REQUEST_STATE rstate,
 		const char* job,
 		const size_t len);
+
+int send_cookie(REQUEST_STATE rstate, struct MHD_Response* response);
 
 #endif

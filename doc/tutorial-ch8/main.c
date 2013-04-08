@@ -8,12 +8,18 @@
 #include <stdlib.h>
 
 #define MAX_CLIENTS 50
-#define MAX_UPLOAD_CLIENTS 2
-#define UPLOAD_MULTIPLIER 24
+#define MAX_UPLOAD_CLIENTS 50
+#define UPLOAD_MULTIPLIER 3
+#define FRESHEN_SESSIONS_FREQUENCY 30
+
+BOOL killed;
 
 void catch(int signal)
 {
 	debug("Caught signal %d: %s", signal, strsignal(signal));
+	if (signal != SIGALRM) {
+		killed = TRUE;
+	}
 }
 
 int main()
@@ -21,9 +27,11 @@ int main()
 	sigset_t empty_sigset;
 	struct MHD_Daemon* daemon;
 
+	killed = FALSE;
 	signal(SIGHUP, SIG_IGN);
 	signal(SIGINT, &catch);
 	signal(SIGTERM, &catch);
+	signal(SIGALRM, &catch);
 	sigemptyset(&empty_sigset);
 
 	debug("Starting daemon...");
@@ -32,6 +40,9 @@ int main()
 			MAX_UPLOAD_CLIENTS,
 			UPLOAD_MULTIPLIER);
 	daemon = MHD_start_daemon(
+#ifdef DEBUG
+		MHD_USE_DEBUG |
+#endif
 		MHD_USE_SELECT_INTERNALLY,
 		8080,
 		NULL,
@@ -50,7 +61,11 @@ int main()
 	} else {
 		debug("Daemon has been started.");
 
-		sigsuspend(&empty_sigset);
+		alarm(FRESHEN_SESSIONS_FREQUENCY);
+		while (sigsuspend(&empty_sigset) && !killed) {
+			freshen_sessions(dstate);
+			alarm(FRESHEN_SESSIONS_FREQUENCY);
+		}
 	
 		debug("Stopping daemon...");
 		MHD_stop_daemon(daemon);

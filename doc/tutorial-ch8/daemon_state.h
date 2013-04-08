@@ -39,4 +39,6 @@ SESSION get_session(DAEMON_STATE dstate, const char* cookie);
 
 void save_session(DAEMON_STATE dstate, const char* cookie, SESSION session);
 
+void freshen_sessions(DAEMON_STATE dstate);
+
 #endif

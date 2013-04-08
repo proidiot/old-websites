@@ -2,12 +2,12 @@
 
 #include "html_encode.h"
 #include "base64.h"
+#include "debug.h"
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 
-#define COOKIE_NAME "SESSION"
 #define RAND_LEN 768
 #define POST_BUFFER_SIZE 768
 
@@ -18,12 +18,14 @@ REQUEST_STATE new_REQUEST_STATE(
 		MHD_PostDataIterator posthandler)
 {
 	if (dstate == NULL) {
+		debug("DAEMON_STATE was NULL");
 		return NULL;
 	}
 
 	REQUEST_STATE rstate = (REQUEST_STATE)malloc(
 			sizeof(struct REQUEST_STATE_STRUCT));
 	if (rstate == NULL) {
+		debug("Unable to allocate REQUEST_STATE");
 		return NULL;
 	}
 
@@ -37,16 +39,24 @@ REQUEST_STATE new_REQUEST_STATE(
 		size_t len = RAND_LEN;
 		unsigned char* buf = (unsigned char*)malloc(len);
 		if (buf == NULL) {
-			free(rstate);
-			return NULL;
+			debug("Unable to allocate random buffer");
+			rstate->was_error = TRUE;
+			return rstate;
 		}
 
 		FILE* fd = fopen("/dev/urandom", "rb");
-		int res = fread(buf, len, 1, fd);
+		if (fd == NULL) {
+			debug("Unable to open random file");
+			free(buf);
+			rstate->was_error = TRUE;
+			return rstate;
+		}
+		int res = fread(buf, 1, len, fd);
 		fclose(fd);
 		if (res != len) {
-			free(rstate);
-			return NULL;
+			debug("Did not read correct amount of randomness");
+			rstate->was_error = TRUE;
+			return rstate;
 		}
 
 		size_t enclen;
@@ -71,6 +81,7 @@ REQUEST_STATE new_REQUEST_STATE(
 				posthandler,
 				(void*)rstate);
 		if (rstate->processor == NULL) {
+			debug("Unable to initialize POST processor");
 			rstate->was_error = TRUE;
 		}
 	} else {
@@ -189,4 +200,20 @@ BOOL append_encoded_job(
 	return TRUE;
 }
 
+int send_cookie(REQUEST_STATE rstate, struct MHD_Response* response)
+{
+	size_t len = strlen(COOKIE_NAME) + 1 + strlen(rstate->cookie) + 1;
+	char* cookie_string = (char*)malloc(len);
+	if (cookie_string == NULL) {
+		debug("Unable to allocate cookie string");
+		return MHD_NO;
+	}
+
+	snprintf(cookie_string, len, "%s=%s", COOKIE_NAME, rstate->cookie);
+
+	return MHD_add_response_header(
+			response,
+			MHD_HTTP_HEADER_SET_COOKIE,
+			cookie_string);
+}
 

@@ -1,5 +1,6 @@
 #include "daemon_state.h"
 
+#include "debug.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -180,6 +181,7 @@ void save_session(DAEMON_STATE dstate, const char* cookie, SESSION session)
 
 void freshen_sessions(DAEMON_STATE dstate)
 {
+	unsigned int count = 0;
 	uint8_t index[BUFSIZ];
 	Word_t* pval;
 	strcpy(index, "");
@@ -192,8 +194,12 @@ void freshen_sessions(DAEMON_STATE dstate)
 		} else if (session->last_accessed + SESSION_LIFE < time(NULL)) {
 			destroy_SESSION(session);
 			JSLD(temp, dstate->sessions, index);
+			count++;
 		}
 		JSLN(pval, dstate->sessions, index);
+	}
+	if (count > 0) {
+		debug("Removed %s old sessions.");
 	}
 }
 
