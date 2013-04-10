@@ -73,6 +73,7 @@ AC_CONFIG_FILES([Makefile
 		 doc/tutorial-ch6/Makefile
 		 doc/tutorial-ch7/Makefile
 		 doc/tutorial-ch8/Makefile
+		 doc/tutorial-ch9/Makefile
                  src/Makefile
                  test/Makefile])
 AC_OUTPUT

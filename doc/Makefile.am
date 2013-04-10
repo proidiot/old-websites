@@ -15,7 +15,8 @@ SUBDIRS = tutorial-ch2 \
 	  tutorial-ch5-ipblock \
 	  tutorial-ch6 \
 	  tutorial-ch7 \
-	  tutorial-ch8
+	  tutorial-ch8 \
+	  tutorial-ch9
 
 else
 
